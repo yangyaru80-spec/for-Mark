@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Mark</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0b0b0b;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.chat {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+}
+
+.msg {
+  background: #1f1f1f;
+  padding: 12px 16px;
+  border-radius: 15px;
+  margin: 10px 0;
+  max-width: 80%;
+  margin-left: auto;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 0.5s;
+}
+
+.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+#secret, #final {
+  text-align: center;
+  padding: 40px 20px;
+  opacity: 0;
+  transition: 2s;
+}
+
+#hint {
+  text-align: center;
+  font-size: 12px;
+  opacity: 0;
+  margin-top: 40px;
+  cursor: pointer;
+}
+img {
+  width: 90%;
+  border-radius: 12px;
+  margin-top: 20px;
+  opacity: 0;
+  transition: 2s;
+}
+</style>
+</head>
+
+<body onclick="startMusic()">
+
+<!-- 🎵 音乐 -->
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="chat" id="chat"></div>
+<div class="chat">
+  <button onclick="next()">继续</button>
+</div>
+
+<div class="chat" style="text-align:center;">
+  <img id="photo" src="photo.jpg">
+</div>
+
+<div id="secret"></div>
+<div id="hint">（好像还有一句话）</div>
+<div id="final"></div>
+
+<script>
+let started = false;
+function startMusic(){
+  if(!started){
+    document.getElementById("music").play();
+    started = true;
+  }
+}
+
+const messages = [
+"在吗",
+"今天其实有点想认真说点话",
+"不过你先别紧张",
+"也不是什么很重要的事情",
+
+"就是突然想到",
+"我们第一次见面的时候",
+"我其实挺紧张的",
+
+"你当时看起来",
+"真的有点不好接近",
+
+"甚至让我觉得",
+"这场面试应该会很难",
+
+"后来才发现",
+"你只是说话比较直接",
+"还有点毒舌",
+
+"但奇怪的是",
+"我却慢慢记住了你说的很多话",
+
+"那些话，后来都变成了我的答案",
+
+"……",
+
+"算了",
+
+"今天是你生日",
+
+"生日快乐，Mark"
+];
+
+let i = 0;
+const chat = document.getElementById("chat");
+
+function next(){
+  if(i < messages.length){
+    let div = document.createElement("div");
+    div.className="msg";
+    div.innerText=messages[i];
+    chat.appendChild(div);
+
+    setTimeout(()=>div.classList.add("show"),100);
+    i++;
+  } else {
+    document.getElementById("photo").style.opacity=1;
+    showButton();
+  }
+}
+
+function showButton(){
+  let btn = document.createElement("button");
+  btn.innerText="有一句话，其实刚刚没说";
+  btn.onclick = showSecret;
+  chat.appendChild(btn);
+}
+
+function showSecret(){
+  document.body.innerHTML="";
+
+  setTimeout(()=>{
+    const s = document.getElementById("secret");
+    s.style.display="block";
+
+    s.innerHTML=`
+    <p>本来只是想说生日快乐。</p>
+    <p>但好像没那么简单。</p>
+    <br>
+    <p>因为是你——</p>
+    <p>所以很多事情，都会变得不一样。</p>
+    <br>
+    <p>不过没关系。</p>
+    <p>你可以当作没看见。</p>
+    <br>
+    <p>我会继续假装，一切都很正常。</p>
+    <br>
+    <p>只是——</p>
+    <p>如果哪一天你发现，</p>
+    <p>我好像有点不太一样……</p>
+    <br>
+    <p>那大概，不是错觉。</p>
+    <br><br>
+    <p style="font-size:12px;opacity:0.5;">
+    你还是可以继续对我毒舌。<br>
+    我应该，会继续听。
+    </p>
+    `;
+
+    setTimeout(()=>s.style.opacity=1,200);
+
+    setTimeout(()=>{
+      const hint = document.getElementById("hint");
+      hint.style.opacity=0.3;
+      hint.onclick = showFinal;
+    },4000);
+
+  },3000);
+}
+
+function showFinal(){
+  const final = document.getElementById("final");
+  final.style.display="block";
+
+  final.innerHTML=`
+  <p>其实还有一句话。</p>
+  <br>
+  <p>刚刚没说，是因为有点不太合适。</p>
+  <br>
+  <p>但既然你点到了这里——</p>
+  <br>
+  <p>那就当作，是你主动想听的吧。</p>
+  <br><br>
+  <p>我好像，比我以为的，</p>
+  <p>更在意你一点。</p>
+  <br><br>
+  <p style="opacity:0.5;font-size:12px;">
+  （这次是真的说完了）
+  </p>
+  `;
+
+  setTimeout(()=>final.style.opacity=1,200);
+}
+</script>
+
+</body>
+</html>
