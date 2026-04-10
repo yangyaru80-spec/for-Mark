@@ -68,6 +68,20 @@ img {
   opacity: 0;
   transition: 2s;
 }
+
+/* 🎬 黑屏过渡 */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s ease;
+  z-index: 999;
+}
 </style>
 </head>
 
@@ -79,6 +93,7 @@ img {
 </audio>
 
 <div class="chat" id="chat"></div>
+
 <div class="chat">
   <button onclick="next()">继续</button>
 </div>
@@ -90,6 +105,9 @@ img {
 <div id="secret"></div>
 <div id="hint">（好像还有一句话）</div>
 <div id="final"></div>
+
+<!-- 🎬 过渡层 -->
+<div id="overlay"></div>
 
 <script>
 let started = false;
@@ -221,31 +239,65 @@ function showButton(){
   chat.appendChild(btn);
 }
 
+/* 🎬 电影级过渡 */
 function showSecret(){
-  const s = document.getElementById("secret");
+  const overlay = document.getElementById("overlay");
 
-  s.style.display="block";
-
-  s.innerHTML=`
-  <p>本来只是想说生日快乐。</p>
-  <p>但好像没那么简单。</p>
-  <br>
-  <p>因为是你——</p>
-  <p>所以很多事情，都会变得不一样。</p>
-  <br>
-  <p>只是——</p>
-  <p>有些在意，好像藏不太住。</p>
-  `;
-
-  setTimeout(()=>s.style.opacity=1,200);
+  overlay.style.opacity = 1;
 
   setTimeout(()=>{
-    const hint = document.getElementById("hint");
-    hint.style.opacity=0.3;
-    hint.onclick = showFinal;
-  },4000);
+
+    const s = document.getElementById("secret");
+    s.style.display="block";
+
+    s.innerHTML = `
+      <p class="fade">本来只是想说生日快乐。</p>
+      <p class="fade">但好像没那么简单。</p>
+
+      <br>
+
+      <p class="fade">因为是你——</p>
+      <p class="fade">所以很多事情，都会变得不一样。</p>
+
+      <br>
+
+      <p class="fade">只是——</p>
+      <p class="fade">有些在意，好像藏不太住。</p>
+    `;
+
+    overlay.style.opacity = 0;
+
+    setTimeout(()=>{
+      s.style.opacity = 1;
+      revealLines();
+    },300);
+
+    setTimeout(()=>{
+      const hint = document.getElementById("hint");
+      hint.style.opacity = 0.3;
+      hint.onclick = showFinal;
+    },5000);
+
+  },1500);
 }
 
+/* 🎬 逐行浮现 */
+function revealLines(){
+  const lines = document.querySelectorAll(".fade");
+
+  lines.forEach((el, index)=>{
+    el.style.opacity = 0;
+    el.style.transform = "translateY(10px)";
+    el.style.transition = "0.8s";
+
+    setTimeout(()=>{
+      el.style.opacity = 1;
+      el.style.transform = "translateY(0)";
+    }, index * 600);
+  });
+}
+
+/* 第二层 */
 function showFinal(){
   const final = document.getElementById("final");
   final.style.display="block";
@@ -254,9 +306,11 @@ function showFinal(){
   <p>其实还有一句话。</p>
   <br>
   <p>既然你点到了这里——</p>
+
   <br><br>
 
   <p>那就当作，是你自己选择听的吧。</p>
+
   <br><br>
 
   <p>我好像，</p>
@@ -278,8 +332,10 @@ function showFinal(){
   },1000);
 }
 
+/* 💀 终极绝杀 */
 function showUltimate(){
-  document.body.innerHTML = "";
+  const overlay = document.getElementById("overlay");
+  overlay.style.opacity = 1;
 
   setTimeout(()=>{
     document.body.innerHTML = `
@@ -287,35 +343,4 @@ function showUltimate(){
       color:white;
       text-align:center;
       padding:100px 30px;
-      font-size:18px;
-      line-height:1.8;
-    ">
-      <p>本来这句话，</p>
-      <p>是打算一直不说的。</p>
-
-      <br><br>
-
-      <p>但如果你已经看到这里了——</p>
-
-      <br><br>
-
-      <p>那我就当作，</p>
-      <p>你其实也不介意知道一点点答案。</p>
-
-      <br><br>
-
-      <p>我不太想只是刚好认识你。</p>
-
-      <br><br>
-
-      <p style="opacity:0.6;font-size:12px;">
-      （这次，真的没有下一句了）
-      </p>
-    </div>
-    `;
-  },2000);
-}
-</script>
-
-</body>
-</html>
+      font-size:1
