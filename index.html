@@ -36,16 +36,6 @@ body {
   transform: translateY(0);
 }
 
-button {
-  width: 100%;
-  padding: 15px;
-  background: #111;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  margin-top: 20px;
-}
-
 #secret, #final {
   text-align: center;
   padding: 40px 20px;
@@ -69,7 +59,6 @@ img {
   transition: 2s;
 }
 
-/* 🎬 黑屏过渡 */
 #overlay {
   position: fixed;
   top: 0;
@@ -87,16 +76,11 @@ img {
 
 <body onclick="startMusic()">
 
-<!-- 🎵 音乐 -->
 <audio id="music" loop>
   <source src="告白气球.钢琴版.-沈波#2uvlgk.mp3" type="audio/mpeg">
 </audio>
 
 <div class="chat" id="chat"></div>
-
-<div class="chat">
-  <button onclick="next()">继续</button>
-</div>
 
 <div class="chat" style="text-align:center;">
   <img id="photo" src="mmexport1775756575498.jpg">
@@ -106,14 +90,28 @@ img {
 <div id="hint">（好像还有一句话）</div>
 <div id="final"></div>
 
-<!-- 🎬 过渡层 -->
 <div id="overlay"></div>
 
 <script>
 let started = false;
+
+/* 🎵 音乐渐入 */
 function startMusic(){
   if(!started){
-    document.getElementById("music").play();
+    const music = document.getElementById("music");
+    music.volume = 0;
+    music.play().catch(()=>{});
+
+    let v = 0;
+    let fade = setInterval(()=>{
+      if(v < 1){
+        v += 0.05;
+        music.volume = v;
+      } else {
+        clearInterval(fade);
+      }
+    },200);
+
     started = true;
   }
 }
@@ -216,7 +214,8 @@ let i = 0;
 let finished = false;
 const chat = document.getElementById("chat");
 
-function next(){
+/* 自动播放 */
+function autoPlay(){
   if(i < messages.length){
     let div = document.createElement("div");
     div.className="msg";
@@ -224,29 +223,25 @@ function next(){
     chat.appendChild(div);
 
     setTimeout(()=>div.classList.add("show"),100);
+
     i++;
+
+    setTimeout(autoPlay, 1400);
   } else if (!finished) {
     finished = true;
+
     document.getElementById("photo").style.opacity=1;
-    showButton();
+
+    setTimeout(showSecret, 2000);
   }
 }
 
-function showButton(){
-  let btn = document.createElement("button");
-  btn.innerText="有一句话，其实刚刚没说";
-  btn.onclick = showSecret;
-  chat.appendChild(btn);
-}
-
-/* 🎬 电影级过渡 */
+/* 电影过渡 */
 function showSecret(){
   const overlay = document.getElementById("overlay");
-
   overlay.style.opacity = 1;
 
   setTimeout(()=>{
-
     const s = document.getElementById("secret");
     s.style.display="block";
 
@@ -281,7 +276,7 @@ function showSecret(){
   },1500);
 }
 
-/* 🎬 逐行浮现 */
+/* 逐行浮现 */
 function revealLines(){
   const lines = document.querySelectorAll(".fade");
 
@@ -304,7 +299,9 @@ function showFinal(){
 
   final.innerHTML=`
   <p>其实还有一句话。</p>
+
   <br>
+
   <p>既然你点到了这里——</p>
 
   <br><br>
@@ -332,7 +329,7 @@ function showFinal(){
   },1000);
 }
 
-/* 💀 终极绝杀 */
+/* 💀 最终绝杀 */
 function showUltimate(){
   const overlay = document.getElementById("overlay");
   overlay.style.opacity = 1;
@@ -343,4 +340,10 @@ function showUltimate(){
       color:white;
       text-align:center;
       padding:100px 30px;
-      font-size:1
+      font-size:18px;
+      line-height:1.8;
+    ">
+      <p>本来这句话，</p>
+      <p>是打算一直不说的。</p>
+
+      <br><br>
