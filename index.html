@@ -8,9 +8,10 @@
 <style>
 body {
   margin: 0;
-  background: #0b0b0b;
+  background: black;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: sans-serif;
+  text-align: center;
 }
 
 .chat {
@@ -21,201 +22,117 @@ body {
 
 .msg {
   background: #1f1f1f;
-  padding: 12px 16px;
-  border-radius: 15px;
+  padding: 12px;
+  border-radius: 10px;
   margin: 10px 0;
-  max-width: 80%;
-  margin-left: auto;
   opacity: 0;
-  transform: translateY(10px);
   transition: 0.5s;
 }
 
 .show {
   opacity: 1;
-  transform: translateY(0);
-}
-
-#secret, #final {
-  text-align: center;
-  padding: 40px 20px;
-  opacity: 0;
-  transition: 2s;
-}
-
-#hint {
-  text-align: center;
-  font-size: 12px;
-  opacity: 0;
-  margin-top: 40px;
-  cursor: pointer;
 }
 
 img {
   width: 90%;
-  border-radius: 12px;
-  margin-top: 20px;
+  border-radius: 10px;
   opacity: 0;
   transition: 2s;
 }
 
 #overlay {
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background: black;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.5s ease;
+  opacity: 1;
   z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 </style>
 </head>
 
-<body onclick="startMusic()">
+<body>
 
+<!-- 启动层 -->
+<div id="overlay" onclick="startAll()">
+  <div>点击开始</div>
+</div>
+
+<!-- 音乐 -->
 <audio id="music" loop>
   <source src="告白气球.钢琴版.-沈波#2uvlgk.mp3" type="audio/mpeg">
 </audio>
 
 <div class="chat" id="chat"></div>
 
-<div class="chat" style="text-align:center;">
+<div class="chat">
   <img id="photo" src="mmexport1775756575498.jpg">
 </div>
 
-<div id="secret"></div>
-<div id="hint">（好像还有一句话）</div>
-<div id="final"></div>
-
-<div id="overlay"></div>
-
 <script>
-let started = false;
-
-/* 🎵 音乐渐入 */
-function startMusic(){
-  if(!started){
-    const music = document.getElementById("music");
-    music.volume = 0;
-    music.play().catch(()=>{});
-
-    let v = 0;
-    let fade = setInterval(()=>{
-      if(v < 1){
-        v += 0.05;
-        music.volume = v;
-      } else {
-        clearInterval(fade);
-      }
-    },200);
-
-    started = true;
-  }
-}
-
 const messages = [
 "在吗",
 "今天想用另一种方式跟你说点话",
-
 "……",
-
 "刚刚在想",
 "我们第一次见面的时候",
-
 "那场面试",
-
 "你坐在那里",
 "看起来很冷静",
-
-"像是已经习惯了所有来来往往的人",
-
-"而我只是其中一个",
-"却偏偏记住了你",
-
+"而我却偏偏记住了你",
 "……",
-
 "后来才发现",
-
 "有些人",
-"好像并不会随着时间变淡",
-
-"反而会在不经意的时刻",
-"一遍一遍被想起",
-
+"不会随着时间变淡",
+"反而会反复被想起",
 "……",
-
 "你大概就是这样",
-
-"像一束不会熄灭的光",
-
 "在很普通的日子里",
 "反复出现",
-
 "……",
-
-"惟愿春日不迟，相逢终有时",
-
-"有时候会觉得",
-
-"人与人之间的靠近",
-"其实没有那么复杂",
-
-"只是刚好在某个时间",
-
-"遇见了一个",
-"不太想错过的人",
-
+"遇见你这件事",
+"好像刚刚好",
 "……",
-
-"后来我翻遍很多表达",
-
-"想找一个更准确的词",
-
-"但好像都不太够",
-
-"因为那些定义",
-"都装不下你",
-
-"……",
-
-"如果一定要说",
-
-"那大概是——",
-
-"你出现在我生活里的方式",
-
-"有点太刚好了",
-
-"……",
-
-"你是我三万零一季的惊蛰",
-
-"……",
-
 "所以这次",
-
 "你的生日愿望",
-
-"我可能也想参与一点",
-
-"不用太多",
-
-"一点点就好",
-
+"我也想参与一点",
 "……",
-
 "生日快乐，Mark"
 ];
 
 let i = 0;
-let finished = false;
 const chat = document.getElementById("chat");
 
+/* 启动所有 */
+function startAll(){
+  // 去掉黑屏
+  document.getElementById("overlay").style.display="none";
+
+  // 播放音乐
+  const music = document.getElementById("music");
+  music.volume = 0;
+  music.play();
+
+  let v = 0;
+  let fade = setInterval(()=>{
+    if(v < 1){
+      v += 0.05;
+      music.volume = v;
+    } else {
+      clearInterval(fade);
+    }
+  },200);
+
+  // 开始剧情
+  play();
+}
+
 /* 自动播放 */
-function autoPlay(){
+function play(){
   if(i < messages.length){
     let div = document.createElement("div");
     div.className="msg";
@@ -225,125 +142,41 @@ function autoPlay(){
     setTimeout(()=>div.classList.add("show"),100);
 
     i++;
+    setTimeout(play, 1300);
 
-    setTimeout(autoPlay, 1400);
-  } else if (!finished) {
-    finished = true;
-
+  } else {
+    // 显示图片
     document.getElementById("photo").style.opacity=1;
 
-    setTimeout(showSecret, 2000);
+    setTimeout(showFinal,2000);
   }
 }
 
-/* 电影过渡 */
-function showSecret(){
-  const overlay = document.getElementById("overlay");
-  overlay.style.opacity = 1;
-
-  setTimeout(()=>{
-    const s = document.getElementById("secret");
-    s.style.display="block";
-
-    s.innerHTML = `
-      <p class="fade">本来只是想说生日快乐。</p>
-      <p class="fade">但好像没那么简单。</p>
-
-      <br>
-
-      <p class="fade">因为是你——</p>
-      <p class="fade">所以很多事情，都会变得不一样。</p>
-
-      <br>
-
-      <p class="fade">只是——</p>
-      <p class="fade">有些在意，好像藏不太住。</p>
-    `;
-
-    overlay.style.opacity = 0;
-
-    setTimeout(()=>{
-      s.style.opacity = 1;
-      revealLines();
-    },300);
-
-    setTimeout(()=>{
-      const hint = document.getElementById("hint");
-      hint.style.opacity = 0.3;
-      hint.onclick = showFinal;
-    },5000);
-
-  },1500);
-}
-
-/* 逐行浮现 */
-function revealLines(){
-  const lines = document.querySelectorAll(".fade");
-
-  lines.forEach((el, index)=>{
-    el.style.opacity = 0;
-    el.style.transform = "translateY(10px)";
-    el.style.transition = "0.8s";
-
-    setTimeout(()=>{
-      el.style.opacity = 1;
-      el.style.transform = "translateY(0)";
-    }, index * 600);
-  });
-}
-
-/* 第二层 */
+/* 最后收口 */
 function showFinal(){
-  const final = document.getElementById("final");
-  final.style.display="block";
-
-  final.innerHTML=`
-  <p>其实还有一句话。</p>
-
-  <br>
-
-  <p>既然你点到了这里——</p>
-
-  <br><br>
-
-  <p>那就当作，是你自己选择听的吧。</p>
-
-  <br><br>
-
-  <p>我好像，</p>
-  <p>不只是刚好遇见你。</p>
-
-  <br><br>
-
-  <p id="ultimate" style="opacity:0.2;font-size:12px;cursor:pointer;">
-  （还有一句）
-  </p>
-  `;
-
-  setTimeout(()=>final.style.opacity=1,200);
-
-  setTimeout(()=>{
-    document.getElementById("ultimate").onclick = ()=>{
-      showUltimate();
-    }
-  },1000);
-}
-
-/* 💀 最终绝杀 */
-function showUltimate(){
-  const overlay = document.getElementById("overlay");
-  overlay.style.opacity = 1;
-
   setTimeout(()=>{
     document.body.innerHTML = `
-    <div style="
-      color:white;
-      text-align:center;
-      padding:100px 30px;
-      font-size:18px;
-      line-height:1.8;
-    ">
-      <p>本来这句话，</p>
-      <p>是打算一直不说的。</p>
+    <div style="padding:100px 20px;line-height:1.8;">
+      <p>如果你看到这里了——</p>
+
+      <br>
+
+      <p>那我就不再藏了</p>
 
       <br><br>
+
+      <p>我不太想只是刚好认识你</p>
+
+      <br><br>
+
+      <p style="opacity:0.5;font-size:12px;">
+      （这次真的说完了）
+      </p>
+    </div>
+    `;
+  },1500);
+}
+</script>
+
+</body>
+</html>
