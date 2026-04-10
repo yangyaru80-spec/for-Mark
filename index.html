@@ -222,35 +222,28 @@ function showButton(){
 }
 
 function showSecret(){
-  document.body.innerHTML="";
+  const s = document.getElementById("secret");
+
+  s.style.display="block";
+
+  s.innerHTML=`
+  <p>本来只是想说生日快乐。</p>
+  <p>但好像没那么简单。</p>
+  <br>
+  <p>因为是你——</p>
+  <p>所以很多事情，都会变得不一样。</p>
+  <br>
+  <p>只是——</p>
+  <p>有些在意，好像藏不太住。</p>
+  `;
+
+  setTimeout(()=>s.style.opacity=1,200);
 
   setTimeout(()=>{
-    const s = document.getElementById("secret");
-    s.style.display="block";
-
-    s.innerHTML=`
-    <p>本来只是想说生日快乐。</p>
-    <p>但好像没那么简单。</p>
-    <br>
-    <p>因为是你——</p>
-    <p>所以很多事情，都会变得不一样。</p>
-    <br>
-    <p>不过没关系。</p>
-    <p>你可以当作没看见。</p>
-    <br>
-    <p>只是——</p>
-    <p>有些在意，好像藏不太住。</p>
-    `;
-
-    setTimeout(()=>s.style.opacity=1,200);
-
-    setTimeout(()=>{
-      const hint = document.getElementById("hint");
-      hint.style.opacity=0.3;
-      hint.onclick = showFinal;
-    },4000);
-
-  },3000);
+    const hint = document.getElementById("hint");
+    hint.style.opacity=0.3;
+    hint.onclick = showFinal;
+  },4000);
 }
 
 function showFinal(){
